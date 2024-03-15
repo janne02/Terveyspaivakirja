@@ -7,6 +7,7 @@ import {
   selectUserById,
   updateUserById,
 } from '../models/user-model.mjs';
+import { getEntries } from './entry-controller.mjs';
 
 //function to fetch users
 const getUsers = async (req, res) => {
@@ -99,7 +100,14 @@ const deleteUser = async (req, res) => {
         .status(403)
         .json({error: 'Unauthorized: Only admins can delete users'});
     }
+    // Check if the user has diary entries
+    const hasDiaryEntries = await getEntries(req.params.id);
 
+    if (hasDiaryEntries) {
+      return res
+        .status(409)
+        .json({error: 'Conflict: User has diary entries'});
+    }
     // Proceed with deleting the user
     const result = await deleteUserById(req.params.id);
 
