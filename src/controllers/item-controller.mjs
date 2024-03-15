@@ -3,7 +3,6 @@ import items from '../models/item-model.mjs';
 const getItems = (req, res) => {
   res.json(items);
 };
-
 // palauta vain se objekti, jonka id vastaa pyydettyä, muuten 404
 const getItemById = (req, res) => {
   // console.log('requested item id', req.params.id);
