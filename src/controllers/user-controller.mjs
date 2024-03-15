@@ -112,7 +112,8 @@ const deleteUser = async (req, res) => {
     return res.json(result);
   } catch (error) {
     console.error('Error deleting user:', error);
-    alert('User has diaryentries, you need to delete them first');
+    alert("User has diaryentries, you need to delete them first");
+    return;
   }
 };
 export {getUsers, getUserById, postUser, putUser, deleteUser};
