@@ -7,7 +7,7 @@ import {
   selectUserById,
   updateUserById,
 } from '../models/user-model.mjs';
-import { getEntries } from './entry-controller.mjs';
+
 
 //function to fetch users
 const getUsers = async (req, res) => {
