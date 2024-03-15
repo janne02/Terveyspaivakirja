@@ -100,14 +100,6 @@ const deleteUser = async (req, res) => {
         .status(403)
         .json({error: 'Unauthorized: Only admins can delete users'});
     }
-    // Check if the user has diary entries
-    const hasDiaryEntries = await getEntries(req.params.id);
-
-    if (hasDiaryEntries) {
-      return res
-        .status(409)
-        .json({error: 'Conflict: User has diary entries'});
-    }
     // Proceed with deleting the user
     const result = await deleteUserById(req.params.id);
 
@@ -120,7 +112,7 @@ const deleteUser = async (req, res) => {
     return res.json(result);
   } catch (error) {
     console.error('Error deleting user:', error);
-    return res.status(500).json({error: 'Internal Server Error'});
+    alert('User has diaryentries, you need to delete them first');
   }
 };
 export {getUsers, getUserById, postUser, putUser, deleteUser};
