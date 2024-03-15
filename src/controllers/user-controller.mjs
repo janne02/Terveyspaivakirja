@@ -8,7 +8,6 @@ import {
   updateUserById,
 } from '../models/user-model.mjs';
 
-
 //function to fetch users
 const getUsers = async (req, res) => {
   try {
@@ -49,18 +48,21 @@ const postUser = async (req, res, next) => {
   if (validationErrors.isEmpty()) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const result = await insertUser({
-      username,
-      email,
-      password: hashedPassword
-    },next );
+    const result = await insertUser(
+      {
+        username,
+        email,
+        password: hashedPassword,
+      },
+      next,
+    );
 
     return res.status(201).json(result);
   } else {
     const error = new Error('bad request');
     error.status = 400;
     error.errors = validationErrors.errors;
-    return next (error);
+    return next(error);
   }
 };
 // only user authenticated by token can update or modify own data
