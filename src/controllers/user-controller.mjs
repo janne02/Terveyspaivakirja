@@ -89,21 +89,32 @@ const putUser = async (req, res) => {
   }
 };
 //function to DELETE requests to delete user by id
-const deleteUser = async (req, res, next) => {
-  // console.log('deleteUser', req.user, req.params.id);
-  // admin user can delete any user
-  // user authenticated by token can delete itself
-  if (
-    req.user.user_level !== 'admin' &&
-    req.user.user_id !== parseInt(req.params.id)
-  ) {
-    return next(customError('Unauthorized', 401));
+const deleteUser = async (req, res) => {
+  try {
+    // Get the user's role (user_level) from the request object
+    const userLevel = req.user.user_level;
+
+    // Check if the user is an admin
+    if (userLevel !== 'admin') {
+      return res
+        .status(403)
+        .json({error: 'Unauthorized: Only admins can delete users'});
+    }
+
+    // Proceed with deleting the user
+    const result = await deleteUserById(req.params.id);
+
+    // Check if there was an error while deleting the user
+    if (result.error) {
+      return res.status(result.error).json(result);
+    }
+
+    // User deleted successfully
+    return res.json(result);
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    return res.status(500).json({error: 'Internal Server Error'});
   }
-  const result = await deleteUserById(req.params.id);
-  if (result.error) {
-    return next(customError(result, result.error));
-  }
-  return res.json(result);
 };
 
 export {getUsers, getUserById, postUser, putUser, deleteUser};
